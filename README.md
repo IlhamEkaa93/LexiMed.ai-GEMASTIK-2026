@@ -20,6 +20,15 @@ Berdasarkan studi literatur, tenaga kesehatan menghabiskan hingga **49% waktu ke
 
 ---
 
+## 🌍 Dampak Nyata untuk Masyarakat & Layanan Kesehatan Publik
+Kehadiran LexiMed.ai memberikan implikasi positif yang terukur secara langsung bagi masyarakat luas dan ekosistem pelayanan kesehatan nasional:
+1. **Pemerataan Kualitas Diagnostik di Wilayah 3T**: Membantu puskesmas dan fasilitas kesehatan di daerah terpencil, tertinggal, dan terluar (3T) yang mengalami krisis rasio dokter spesialis radiologi untuk mendapatkan draf ekspertise citra medis yang cepat dan akurat berkat bantuan *Gemini Vision AI* dan *Grad-CAM Heatmap*.
+2. **Penyelamatan Jiwa (*Lifesaving*) di Unit Gawat Darurat**: Pemotongan waktu tunggu (*turnaround time*) pembacaan rontgen dan CT-scan darurat dari hitungan jam menjadi detik, memungkinkan penanganan pasien trauma, stroke, atau sesak napas akut dapat dieksekusi tanpa penundaan.
+3. **Peningkatan Keselamatan Pasien (*Patient Safety*)**: Meminimalkan risiko *diagnostic error* dan kesalahan penulisan resep melalui pengaman ganda (*Dual-Engine AI* + *RAG Knowledge Base* yang mencocokkan tindakan dengan SOP/PPK rumah sakit).
+4. **Efisiensi Antrean & Biaya Pelayanan JKN**: Mengurangi birokrasi manual yang melelahkan, sehingga dokter memiliki waktu konsultasi lebih panjang untuk pasien dan mengurai antrean panjang di rumah sakit rujukan daerah.
+
+---
+
 ## 🎯 Penyelarasan dengan 6 Kriteria Penilaian GEMASTIK XIX
 Repositori dan sistem ini dirancang memenuhi seluruh kriteria penilaian babak penyisihan Divisi Pengembangan Perangkat Lunak:
 1. **Aspek Inovasi (20%)**: Menggunakan *Dual-Engine Pipeline AI* (Groq Llama 3.3 untuk *text reasoning* + Google Gemini 1.5 Flash Vision untuk analisis biner PACS) serta modul *Grad-CAM Heatmap Attention Map*.
