@@ -41,9 +41,9 @@ Repositori dan sistem ini dirancang memenuhi seluruh kriteria penilaian babak pe
 ---
 
 ## 👥 Identitas Tim Pengembang (AAI CLAN)
-* **Ketua Tim**: Muhammad Akyas Febryansah (`V3925029`)
-* **Anggota 1**: Ilham Eka Saputra (`V3924005`) — *AI Integration Lead*
-* **Anggota 2**: Aisyah Nurul Ilmi Prianto (`V3925018`) — *UI/UX Designer*
+* **Ketua Tim**: Aisyah Nurul Ilmi Prianto (`V3925018`)
+* **Anggota 1**: Muhammad Akyas Febryansah (`V3925029`) — *UI/UX Designer*
+* **Anggota 2**: Ilham Eka Saputra (`V3924005`) — *AI Integration Lead*
 * **Dosen Pembimbing**: Darmawan Lahru Riatma, S.Kom., M.MT. (`NIP 1991091420200801`)
 * **Institusi**: D3 Teknik Informatika PSDKU Madiun, Sekolah Vokasi, Universitas Sebelas Maret (UNS)
 
