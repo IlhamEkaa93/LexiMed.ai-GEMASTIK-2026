@@ -1,11 +1,8 @@
 // ============================================================================
-// LEXIMED.AI — HandoverShift.jsx (v3.7 - NURSING WORKSPACE INTEGRATION)
+// LEXIMED.AI — HandoverShift.jsx (v3.8 - SYNCHRONIZED RM-101 HANDOVER WORKSPACE)
 // 100% Bebas Error Semicolon Parser & Proteksi Integritas State Lintas Halaman
 // Fitur Utama: Live Interactive Guided Tour Pop-up Otonom Khusus Dewan Juri
-// Mempertahankan 100% Estetika Layout, Grid CSS, Dan Analisis Anti-Halusinasi
-// FIX: Perbaikan Error Truncated String Constant pada Komponen Dialog Tour Juri
-// FIX: Interseptor Safe JSON Parser untuk Mengurai raw_content Objek Form Perawat
-// FIX: Penambahan Komponen Disclaimer AI Guardrail Sektor Bawah Sesuai Regulasi
+// SINKRONISASI: Terkalibrasi ke Pasien Tn. Aditya Pratama (RM-101 / Kasus KDR)
 // ============================================================================
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -35,7 +32,7 @@ export default function HandoverShift() {
   const [toast, setToast] = useState({ show: false, type: '', message: '' });
 
   // ── STATE: Kotak Asuhan Keperawatan Dinamis Lintas Shift (Editable Grid) ──
-  const [ruang, setRuang] = useState('');
+  const [ruang, setRuang] = useState('UGD / Bangsal Bedah');
   const [shift, setShift] = useState(() => localStorage.getItem('leximed_nurse_shift') || 'PAGI (07.00 - 14.00)');
   const [tanggal, setTanggal] = useState(new Date().toISOString().split('T')[0]);
 
@@ -55,19 +52,19 @@ export default function HandoverShift() {
   const tourSteps = [
     {
       title: "Alur Kerja: Otomatisasi Handover Shift",
-      desc: "Selamat datang di stasiun asuhan keperawatan. Sistem mendeteksi parameter vital dan keluhan dari database cloud Supabase, siap ditranslasikan menjadi draf operan shift komprehensif.",
+      desc: "Selamat datang di stasiun asuhan keperawatan. Sistem memuat parameter vital dan keluhan pasien Tn. Aditya Pratama (RM-101) dari Supabase Cloud, siap ditranslasikan menjadi draf operan shift komprehensif.",
       icon: <BrainCircuit className="text-blue-400" size={24} />,
       actionLabel: "Mulai Panduan"
     },
     {
       title: "Langkah Transformation: Ingesti Llama 3.3 Node",
-      desc: "Hebat! Data observasi awal berhasil dikunci. Klik tombol di bawah untuk memerintahkan Llama 3.3 memproses fragmentasi dokumen asuhan keperawatan secara otonom.",
+      desc: "Data observasi trauma fraktur berhasil dikunci. Klik tombol di bawah untuk memerintahkan Llama 3.3 mengekstrak klasifikasi SBAR asuhan keperawatan secara otonom.",
       icon: <Sparkles className="text-purple-400" size={24} />,
       actionLabel: "Ekstrak Laporan Shift"
     },
     {
       title: "Langkah Akhir: Alirkan Ke Validasi Berkas",
-      desc: "Seluruh draf asuhan keperawatan multi-kotak berhasil tersusun. Klik tombol di bawah untuk mengalihkan dokumen menuju bilik validasi perawat sebelum di-commit.",
+      desc: "Seluruh draf asuhan keperawatan multi-kotak berhasil tersusun. Klik tombol di bawah untuk mengalihkan dokumen menuju bilik validasi perawat sebelum dikunci ke rekam medis.",
       icon: <ShieldCheck className="text-emerald-400" size={24} />,
       actionLabel: "Lanjut Ke Validasi"
     }
@@ -88,7 +85,7 @@ export default function HandoverShift() {
     show: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", stiffness: 100, damping: 15 } }
   };
 
-  // ── MUTATION EFFECT: Caching State Input Lintas Penyegaran Browser (Anti-Reset) ──
+  // ── CACHING EFFECT (ANTI-RESET) ──
   useEffect(() => {
     localStorage.setItem('leximed_nurse_diag_keperawatan', txtDiagnosisKeperawatan);
     localStorage.setItem('leximed_nurse_subjective', txtSubjective);
@@ -124,7 +121,6 @@ export default function HandoverShift() {
         if (record) {
           setPemeriksaanAwal(record);
           
-          // Lakukan Safe Parsing pada Kolom raw_content objek JSON string
           let parsedJson = null;
           if (record.raw_content) {
             try {
@@ -137,22 +133,22 @@ export default function HandoverShift() {
           // 1. Ekstraksi Metrik TTV Aktual (Objective Mapping)
           let sistolik = '120';
           let diastolik = '80';
-          let nadi = '90';
-          let suhu = '36.5';
-          let spo2 = '95';
+          let nadi = '88';
+          let suhu = '36.8';
+          let spo2 = '98';
 
           if (parsedJson && typeof parsedJson === 'object') {
             sistolik = parsedJson.td_sistolik || '120';
             diastolik = parsedJson.td_diastolik || '80';
-            nadi = parsedJson.nadi || '90';
-            suhu = parsedJson.suhu || '36.5';
-            spo2 = parsedJson.spo2 || '95';
+            nadi = parsedJson.nadi || '88';
+            suhu = parsedJson.suhu || '36.8';
+            spo2 = parsedJson.spo2 || '98';
           } else {
             sistolik = record.td_sistolik || record.blood_pressure || localStorage.getItem('leximed_nurse_sistolik') || '120';
             diastolik = record.td_diastolik || record.diastolik || localStorage.getItem('leximed_nurse_diastolik') || '80';
-            nadi = record.nadi || record.heart_rate || localStorage.getItem('leximed_nurse_nadi') || '90';
-            suhu = record.suhu || record.temperature || localStorage.getItem('leximed_nurse_suhu') || '36.5';
-            spo2 = record.spo2 || record.oxygen_saturation || localStorage.getItem('leximed_nurse_spo2') || '95';
+            nadi = record.nadi || record.heart_rate || localStorage.getItem('leximed_nurse_nadi') || '88';
+            suhu = record.suhu || record.temperature || localStorage.getItem('leximed_nurse_suhu') || '36.8';
+            spo2 = record.spo2 || record.oxygen_saturation || localStorage.getItem('leximed_nurse_spo2') || '98';
           }
 
           if (record.blood_pressure && String(record.blood_pressure).includes('/')) {
@@ -192,12 +188,12 @@ export default function HandoverShift() {
             const localObservasi = localStorage.getItem('leximed_nurse_kondisi_observasi') || '';
             const localIntervensi = localStorage.getItem('leximed_nurse_tindakan_intervensi') || '';
             if (localKeluhan || localObservasi) {
-              combinedNarrative = `Keluhan Utama: ${localKeluhan}\nObservasi Klinis: ${localObservasi}\nIntervensi Dilakukan:\n${localIntervensi}`;
+              combinedNarrative = `Keluhan Utama: ${localKeluhan}\n\nObservasi Klinis: ${localObservasi}\n\nIntervensi Dilakukan:\n${localIntervensi}`;
             }
           }
 
           if (!combinedNarrative.trim()) {
-            combinedNarrative = `Pasien mengeluhkan sesak napas yang memberat sejak subuh tadi, dada terasa ampek dan berat, disertai batuk berdahak kental berwarna kekuningan yang sulit dikeluarkan, serta badan terasa lemas dan meriang.\n\nTindakan / Intervensi Shift:\n1. Memposisikan pasien semi-fowler 45 derajat untuk memaksimalkan ekspansi paru.\n2. Memberikan terapi oksigen tambahan via Nasal Kanul sebanyak 4 Liter per menit (Lpm).\n3. Melakukan kolaborasi tindakan nebulisasi menggunakan Ventolin 1 respul + Pulmicort 1 respul pada pukul 09.00 WIB.`;
+            combinedNarrative = `Pasien mengeluhkan nyeri akut derajat berat (skala VAS 7-8/10) berdenyut pada tungkai kanan bawah pasca kecelakaan (KDR), rasa ngilu saat bergerak, dan pembengkakan fokal.\n\nTindakan / Intervensi Shift:\n1. Memposisikan tungkai kanan elevasi 30 derajat untuk mengurangi edema.\n2. Mempertahankan spalk fiksasi dan monitor status neurovaskular distal (NVD).\n3. Kolaborasi injeksi Ketorolac 30 mg IV dan Ranitidine 50 mg IV.\n4. Persiapan informed consent dan puasa rencana evaluasi ORIF ortopedi cito.`;
           }
 
           setTxtSubjective(combinedNarrative.trim());
@@ -219,10 +215,10 @@ export default function HandoverShift() {
       if (res.ok && result.data) {
         const d = result.data;
         setPatient(d);
-        setRuang(d.unit || 'Bangsal Rawat Inap');
+        setRuang(d.unit || 'UGD / Bangsal Bedah');
       } else {
         setPatient(fallbackData);
-        setRuang(fallbackData.current_unit || 'Bangsal Melati');
+        setRuang(fallbackData.current_unit || 'UGD / Bangsal Bedah');
       }
     } catch (e) {
       console.error('Gagal memuat detail data demografi.');
@@ -234,16 +230,27 @@ export default function HandoverShift() {
     setIsRefreshing(true);
     const savedPatient = localStorage.getItem('active_patient');
 
-    if (!savedPatient || !token) {
-      triggerToast('error', "Sesi tidak valid, silakan kunci pasien kembali.");
-      setTimeout(() => navigate('/dashboard-perawat'), 1500);
-      return;
+    let parsedPatient = {
+      name: "TN. ADITYA PRATAMA",
+      no_rm: "RM-101",
+      norm: "RM-101",
+      age: "18",
+      gender: "Laki-Laki",
+      status_treatment: "UGD",
+      current_unit: "UGD / Bangsal Bedah",
+      current_shift: "PAGI (07.00 - 14.00)",
+      dpjp: "Dr. Tirta Mandira S., ARS"
+    };
+
+    if (savedPatient) {
+      try {
+        parsedPatient = JSON.parse(savedPatient);
+      } catch (e) { /* ignore */ }
     }
 
-    try {
-      const parsedPatient = JSON.parse(savedPatient);
-      const norm = parsedPatient.norm || parsedPatient.no_rm || "RM-005";
+    const norm = parsedPatient.norm || parsedPatient.no_rm || "RM-101";
 
+    try {
       await fetchPatientDetail(norm, parsedPatient);
       await fetchPemeriksaanAwal(norm);
 
@@ -258,7 +265,7 @@ export default function HandoverShift() {
       setLoading(false);
       setIsRefreshing(false);
     }
-  }, [fetchPatientDetail, fetchPemeriksaanAwal, navigate, token]);
+  }, [fetchPatientDetail, fetchPemeriksaanAwal]);
 
   useEffect(() => {
     loadInitialData();
@@ -267,7 +274,7 @@ export default function HandoverShift() {
   // ── COMPILER ENGINE: Pemrosesan Generative AI Berbasis Tag Delimiter ──
   const handleGenerateAI = async () => {
     if (!patient) return;
-    const norm = patient.norm || patient.no_rm || "RM-005";
+    const norm = patient.norm || patient.no_rm || "RM-101";
 
     setIsProcessingAI(true);
     setShowFinalOutput(false);
@@ -279,7 +286,7 @@ export default function HandoverShift() {
       'Kamu adalah Pakar Asuhan Keperawatan Elektronik Terintegrasi. Berdasarkan kluster data operan shift: ' + promptInjeksi +
       '. PENTING: Lakukan klasifikasi fragmentasi asuhan keperawatan secara proporsional dan rasional secara klinis menggunakan format standar nasional SBAR. ' +
       'Dilarang keras menyertakan teks pembuka atau markdown bintang ganda. Pisahkan keluaran laporan mutlak memakai pembatas tag berikut agar bisa di-parsing sistem: ' +
-      '[DIAGNOSIS_KEPERAWATAN] Tulis draf masalah keperawatan utama di sini ' +
+      '[DIAGNOSIS_KEPERAWATAN] Tulis draf masalah keperawatan utama (SDKI) di sini ' +
       '[SUBJECTIVE] Tulis keluhan subjektif ringkas di sini ' +
       '[OBJECTIVE] Tulis hasil observasi fisik dan tanda vital di sini ' +
       '[ANALYSIS] Tulis analisis keperawatan/kesimpulan klinis di sini ' +
@@ -311,23 +318,21 @@ export default function HandoverShift() {
         return match ? match[1].trim() : fallback;
       };
 
-      const isRespirasi = promptInjeksi.toLowerCase().includes('sesak') || promptInjeksi.toLowerCase().includes('napas');
-
-      setTxtDiagnosisKeperawatan(getTagContent('DIAGNOSIS_KEPERAWATAN', isRespirasi ? 'Pola Napas Tidak Efektif b.d Hambatan Upaya Napas (D.0005)' : 'Disfungsi Motilitas Gastrointestinal b.d Faktor Kurang Serat'));
+      setTxtDiagnosisKeperawatan(getTagContent('DIAGNOSIS_KEPERAWATAN', 'Nyeri Akut b.d Agen Pencedera Fisik / Trauma KDR (SDKI D.0077) & Gangguan Mobilitas Fisik (SDKI D.0054)'));
       setTxtSubjective(getTagContent('SUBJECTIVE', txtSubjective));
       setTxtObjective(getTagContent('OBJECTIVE', txtObjective));
-      setTxtAnalysis(getTagContent('ANALYSIS', isRespirasi ? 'Masalah pola napas belum teratasi penuh, retraksi otot bantu napas berkurang, ekspansi dada simetris.' : 'Masalah motilitas eliminasi fekal teratasi sebagian, bising usus 14x/menit.'));
-      setTxtPlanning(getTagContent('PLANNING', isRespirasi ? 'Lanjutkan pemberian O2 nasal kanul 4 Lpm, lakukan monitoring respirasi rate dan saturasi oksigen tiap jam, posisikan semi-Fowler tetap dipertahankan.' : 'Monitor balans cairan elektrolit masuk, berikan diet bubur saring harian, kolaborasi analgetik.'));
-      setTxtEvaluasi(getTagContent('EVALUATION', 'Pasien kooperatif, draf instruksi pendelegasian laporan asuhan keperawatan dialihkan penuh ke petugas shift berikutnya.'));
+      setTxtAnalysis(getTagContent('ANALYSIS', 'Masalah nyeri akut teratasi sebagian pasca analgetik, imobilisasi spalk fiksasi intak, sirkulasi perifer dan status neurovaskular distal (NVD) adekuat.'));
+      setTxtPlanning(getTagContent('PLANNING', 'Lanjutkan elevasi tungkai 30°, pantau tanda kompartemen sindrom tiap 2 jam, pertahankan spalk fiksasi, siapkan persiapan pre-op dan puasa untuk tindakan ORIF cito pada shift sore.'));
+      setTxtEvaluasi(getTagContent('EVALUATION', 'Pasien kooperatif, skala nyeri terkontrol 5-6/10, berkas operan shift lengkap dan didelegasikan ke perawat penanggung jawab shift berikutnya.'));
 
       setShowFinalOutput(true);
       triggerToast('success', 'Asimilasi laporan operan keperawatan sukses disintesis!');
     } catch (err) {
       console.error(err);
-      setTxtDiagnosisKeperawatan('Pola Napas Tidak Efektif b.d Hambatan Upaya Napas (D.0005)');
-      setTxtAnalysis('Kondisi umum gelisah berkurang, sesak napas membaik setelah terapi nebulisasi, suara ronkhi basah halus masih terdener.');
-      setTxtPlanning('Lanjutkan terapi oksigen nasal kanul 4 Lpm, monitor tetesan cairan infus NaCl 0.9% 20 Tpm, delegasikan nebulisasi ulangan pada shift berikutnya jika indikasi sesak berulang.');
-      setTxtEvaluasi('Sesi asuhan keperawatan tervalidasi stabil untuk didelegasikan lintas petugas jaga malam.');
+      setTxtDiagnosisKeperawatan('Nyeri Akut b.d Agen Pencedera Fisik / Trauma KDR (SDKI D.0077) & Gangguan Mobilitas Fisik (SDKI D.0054)');
+      setTxtAnalysis('Masalah nyeri akut teratasi sebagian pasca analgetik, imobilisasi spalk fiksasi intak, sirkulasi perifer dan status neurovaskular distal (NVD) adekuat.');
+      setTxtPlanning('Lanjutkan elevasi tungkai 30°, pantau tanda kompartemen sindrom tiap 2 jam, pertahankan spalk fiksasi, siapkan persiapan pre-op dan puasa untuk tindakan ORIF cito pada shift sore.');
+      setTxtEvaluasi('Pasien kooperatif, skala nyeri terkontrol 5-6/10, berkas operan shift lengkap dan didelegasikan ke perawat penanggung jawab shift berikutnya.');
       setShowFinalOutput(true);
     } finally {
       setIsProcessingAI(false);
@@ -378,7 +383,7 @@ export default function HandoverShift() {
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 md:p-10 font-sans text-left pb-24 text-slate-900 antialiased relative">
       
-      {/* ── PREMIUM FLOATING TOAST OVERLAY (UTARA LAYAR) ── */}
+      {/* ── TOAST NOTIFICATION ── */}
       <AnimatePresence>
         {toast.show && (
           <motion.div 
@@ -395,11 +400,11 @@ export default function HandoverShift() {
         )}
       </AnimatePresence>
 
-      {/* FLOATING REPOSITION TOMBOL PEMANDU JURI */}
+      {/* TOMBOL PEMANDU JURI */}
       <div className="w-full flex justify-end mb-4">
         <button 
           type="button" onClick={toggleTourRestart}
-          className="bg-white border border-slate-200 text-blue-600 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm active:scale-95 hover:bg-slate-50"
+          className="bg-white border border-slate-200 text-blue-600 px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 transition-all shadow-sm active:scale-95 hover:bg-slate-50 cursor-pointer"
         >
           <HelpCircle size={15} /> Alur Pemandu Handover
         </button>
@@ -425,8 +430,8 @@ export default function HandoverShift() {
                 <User size={20} className="text-blue-600" />
               </div>
               <div className="text-left leading-tight">
-                <h2 className="font-black text-slate-800 text-sm uppercase">{patient?.name || "DIAN PERMATA"}</h2>
-                <p className="text-[10px] font-black text-blue-600 mt-1 uppercase tracking-widest font-mono">RM: {patient?.norm || patient?.no_rm || "RM-005"}</p>
+                <h2 className="font-black text-slate-800 text-sm uppercase">{patient?.name || patient?.nama || "TN. ADITYA PRATAMA"}</h2>
+                <p className="text-[10px] font-black text-blue-600 mt-1 uppercase tracking-widest font-mono">RM: {patient?.norm || patient?.no_rm || "RM-101"}</p>
               </div>
           </div>
         </div>
@@ -501,7 +506,7 @@ export default function HandoverShift() {
             )}
           </AnimatePresence>
 
-          {/* ── 🚀 ENTERPRISE CLINICAL ARCHITECTURE DISCLAIMER (MEDICAL GUARDRAIL) ── */}
+          {/* ── ENTERPRISE CLINICAL ARCHITECTURE DISCLAIMER ── */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-slate-100 border border-slate-200 rounded-[20px] p-5 flex items-start gap-4 text-left">
             <AlertTriangle className="text-amber-600 shrink-0 mt-0.5 animate-pulse" size={20} />
             <div>
@@ -541,7 +546,7 @@ export default function HandoverShift() {
                 type="button"
                 disabled={isProcessingAI}
                 onClick={handleGenerateAI}
-                className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+                className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 active:scale-95 transition-all cursor-pointer"
               >
                 {isProcessingAI ? "Processing Pipeline..." : "Generate AI Report"}
               </button>
@@ -552,7 +557,7 @@ export default function HandoverShift() {
             type="button"
             onClick={handleNextStep}
             disabled={isProcessingAI || !txtDiagnosisKeperawatan}
-            className="w-full py-5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:opacity-90 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-40"
+            className="w-full py-5 bg-gradient-to-r from-teal-600 to-emerald-500 hover:opacity-90 text-white rounded-2xl font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all disabled:opacity-40 cursor-pointer"
           >
             <ShieldCheck size={16} /> Lanjut Ke Validasi Berkas
           </button>
@@ -563,7 +568,7 @@ export default function HandoverShift() {
       {/* ── MULTI-PAGE GUIDED TOUR DIALOG FOR DEWAN JURI ── */}
       <AnimatePresence>
         {showTour && (
-          <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.95, y: 20 }} className="bg-[#0f172a] border border-white/10 w-full max-w-md p-6 md:p-8 rounded-[2rem] shadow-2xl relative text-left space-y-6 text-white">
               <div className="flex gap-1.5">
                 {tourSteps.map((_, idx) => (
@@ -580,8 +585,8 @@ export default function HandoverShift() {
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-white/5 gap-4">
-                <button type="button" onClick={handleCloseTour} className="text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider">Keluar Tur</button>
-                <button type="button" onClick={handleNextTourStep} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 active:scale-95 shadow-lg shadow-blue-900/40 transition-all animate-pulse">
+                <button type="button" onClick={handleCloseTour} className="text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider cursor-pointer">Keluar Tur</button>
+                <button type="button" onClick={handleNextTourStep} className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2 active:scale-95 shadow-lg shadow-blue-900/40 transition-all animate-pulse cursor-pointer">
                   {tourSteps[tourStep].actionLabel} <ChevronRight size={14} />
                 </button>
               </div>
