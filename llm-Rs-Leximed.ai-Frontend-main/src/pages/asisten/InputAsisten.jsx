@@ -1,11 +1,9 @@
 // ============================================================================
-// LEXIMED.AI — InputAsisten.jsx (v3.0 - DYNAMIC INGESTION & TOAST ARCHITECTURE)
+// LEXIMED.AI — InputAsisten.jsx (v3.1 - SYNCHRONIZED RM-101 TRIAGE INGESTION)
 // 100% Bebas Error Semicolon Parser & Integrasi Dual-Engine Triage Dashboard
 // Fitur Tambahan: Quick Ingest Buttons, Live Equalizer Wave Animation, & Neomorphic Glow
 // Fitur Utama: Alur Kerja Sistem Guided Tour Pop-up Lintas Halaman Otonom Juri
-// FIX: Penambahan Tombol AI Fungsional untuk Merapikan & Menstrukturkan Catatan Chat
-// FIX: Eliminasi Total Istilah SOAP Sesuai Kompetensi Batas Kerja Asisten Medis
-// FIX: Memperbaiki Logika Navigasi Akhir Agar Tetap Berada di Workstation Asisten
+// SINKRONISASI: Terkalibrasi ke Pasien Tn. Aditya Pratama (RM-101 / Kasus KDR)
 // ============================================================================
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -38,29 +36,28 @@ export default function InputAsisten() {
     const [saveStatus, setSaveStatus] = useState(null); 
     const [errorMessage, setErrorMessage] = useState(''); 
 
-    // State Premium Floating Toast Notification Internal
     const [toast, setToast] = useState({ show: false, type: '', message: '' });
 
-    // ── STATE: INTERACTIVE WORKFLOW TOUR PANDUAN JURI ──
+    // ── STATE: INTERACTIVE WORKFLOW TOUR PANDUAN JURI (TERKALIBRASI KE RM-101) ──
     const [showTour, setShowTour] = useState(false);
     const [tourStep, setTourStep] = useState(0);
 
     const tourSteps = [
         {
             title: "Alur Kerja Sistem: Stasiun Pemeriksaan TTV",
-            desc: "Konteks pasien berhasil dikunci di bilik asisten. Sekarang, mari kita simulasikan pemeriksaan tanda vital (TTV) komprehensif beserta keluhan utamanya.",
+            desc: "Konteks pasien Tn. Aditya Pratama (RM-101) berhasil dikunci di bilik asisten. Mari simulasikan penginputan tanda-tanda vital (TTV) dan anamnesis trauma awal.",
             icon: <ClipboardList className="text-teal-400" size={24} />,
             actionLabel: "Muat Data TTV Tiruan"
         },
         {
             title: "Alur Kerja Sistem: Ingesti Narasi Suara (Voice Note)",
-            desc: "Hebat! Angka vital berhasil terisi. Selanjutnya, asisten medis dapat menggunakan fitur Voice Note terintegrasi untuk merekam penuturan lisan keluhan pasien secara real-time.",
+            desc: "Angka vital berhasil disinkronkan. Asisten medis dapat merekam penuturan kronologi kecelakaan pasien secara langsung via Voice Note real-time.",
             icon: <Mic className="text-blue-400" size={24} />,
-            actionLabel: "Simulasikan Rekam Keluhan"
+            actionLabel: "Simulasikan Rekam Keluhan KDR"
         },
         {
             title: "Alur Kerja Sistem: Distribusi Pipeline Data Otonom",
-            desc: "Seluruh berkas anamnesa awal siap dikirim. Klik tombol di bawah untuk menyelesaikan panduan juri, lalu Anda dapat menjelaskan alur sistem sebelum mengirim data secara manual.",
+            desc: "Seluruh berkas triage awal siap dikirim ke antrean Dokter DPJP (Dr. Tirta). Klik tombol di bawah untuk menyelesaikan panduan juri, lalu Anda dapat mengirim data secara manual.",
             icon: <Sparkles className="text-amber-400" size={24} />,
             actionLabel: "Terapkan & Jelaskan Manual"
         }
@@ -83,13 +80,20 @@ export default function InputAsisten() {
                 console.error("Gagal membaca data pasien", e);
             }
         } else {
-            // Fallback default juri khusus untuk TN. ADITYA (RM-001)
-            const defaultPatient = { name: "TN. ADITYA", no_rm: "RM-001", norm: "RM-001", unit: "Poli Paru" };
+            // Default fallback terkalibrasi ke TN. ADITYA PRATAMA (RM-101)
+            const defaultPatient = { 
+                name: "TN. ADITYA PRATAMA", 
+                no_rm: "RM-101", 
+                norm: "RM-101", 
+                age: "18",
+                gender: "Laki-Laki",
+                unit: "UGD / Trauma",
+                dpjp: "Dr. Tirta Mandira S., ARS"
+            };
             setActivePatient(defaultPatient);
             localStorage.setItem('active_patient', JSON.stringify(defaultPatient));
         }
 
-        // Jalankan pemandu pop-up jika sesi tour asisten terdeteksi aktif
         const currentTourStep = sessionStorage.getItem('leximed_asisten_tour_step') || 'input_ttv';
         if (currentTourStep && !sessionStorage.getItem('leximed_asisten_tour_completed')) {
             setTourStep(0);
@@ -138,30 +142,28 @@ export default function InputAsisten() {
         }
     };
 
-    // Fungsi suntik instan data simulasi menyesuaikan profil keluhan pasien aktif secara dinamis
+    // Fungsi suntik instan data simulasi trauma KDR sinkron RM-101
     const injectSimulationData = () => {
-        // Angka klinis kasus akut pernapasan penunjang rujukan Radiologi PACS
-        setTdSistolik('138');
-        setTdDiastolik('89');
-        setNadi('108'); // Takikardia respons dari hipoksia
-        setSuhu('38.5'); // Febrile tinggi indikasi infeksi paru
-        setSpo2('92'); // Saturasi drop di bawah ambang normal, butuh penapisan rontgen
+        setTdSistolik('120');
+        setTdDiastolik('80');
+        setNadi('88');
+        setSuhu('36.8');
+        setSpo2('98');
     };
 
     // =========================================================================
-    // 🧠 AI ENGINE: FUNGSIONALITAS MERAPIKAN CHAT KELUHAN AGAR RAPI DI DOKTER
+    // 🧠 AI ENGINE: FUNGSIONALITAS MERAPIKAN CHAT KELUHAN (SINKRON KASUS KDR)
     // =========================================================================
     const handleOptimizeAI = () => {
         if (!keluhanAwal) return triggerToast('error', "Silakan ketik atau rekam keluhan terlebih dahulu!");
         
         let textKonten = keluhanAwal;
         
-        // Cek jika teks mengandung data mentah simulasi juri, translasikan menjadi draf super rapi
+        // Translasikan menjadi draf terstruktur resmi kasus trauma KDR
         if (textKonten.includes('HASIL ANAMNESA TRIAGE MANUAL:')) {
-            textKonten = `[DRAF ANAMNESA KLINIS TERSTRUKTUR AI]\n========================================\n\n• KELUHAN UTAMA:\n  Sesak napas akut (dyspnea) kian memberat sejak 2 hari terakhir, dada terasa ampek/sempit terutama saat inspirasi dalam.\n\n• GEJALA PENYERTA:\n  Batuk produktif dengan sputum kental berwarna kuning-kehijauan, febrile tinggi menggigil, disertai nyeri dada fokal menusuk di rusuk kanan bawah.\n\n• FAKTOR RISIKO:\n  Pasien memiliki riwayat perokok aktif. Riwayat penyakit asma dari silsilah keluarga dinyatakan negatif.\n\n• STATUS FISIK TRIAGE:\n  Pasien gelisah, takipnea, terlihat penggunaan otot bantu pernapasan interkostal positif. Hasil auskultasi paru fokal ronkhi basah kasar di kedua lapang paru kanan basal bawah.\n\n• REKOMENDASI RADIOLOGI PACS:\n  Segera lakukan pemeriksaan Multimodal Thorax Imaging (Rontgen/CT-Scan) untuk penapisan diagnosis diferensial Pneumonia Bakterial atau Efusi Pleura.`;
+            textKonten = `[DRAF ANAMNESA TRIAGE TERSTRUKTUR AI]\n========================================\n\n• KELUHAN UTAMA:\n  Nyeri akut derajat berat (VAS 8/10), bengkak signifikan, dan deformitas fokal pada tungkai kanan bawah pasca kecelakaan lalu lintas (KDR).\n\n• MEKANISME TRAUMA:\n  Pasien terjatuh dari sepeda motor kecepatan sedang, tungkai kanan terbentur aspal dan dada kanan membentur stang motor.\n\n• STATUS LOKALIS & OBSERVASI:\n  Pasien tampak meringis kesakitan, compos mentis. Regio tungkai kanan bawah tampak edema, deformitas sudut fokal abnormal, nyeri tekan (+), krepitasi (+). Pulsasi arteri distal adekuat.\n\n• REKOMENDASI DPJP (DR. TIRTA):\n  Pasang spalk fiksasi sementara dan jadwalkan rujukan Multimodal Radiologi PACS: Toraks & Ekstremitas X-Ray / CT 3D untuk konfirmasi Fraktur Komunitif Tibia.`;
         } else {
-            // Jika teks berupa ketikan bebas biasa, rapikan formatnya secara elegan
-            textKonten = `[DRAF ANAMNESA KLINIS TERSTRUKTUR AI]\n========================================\n\n• KELUHAN PASIEN:\n  ${textKonten}\n\n• CATATAN INTERSEPTOR:\n  Format narasi telah dioptimalkan secara otomatis untuk kebutuhan visualisasi rekam medis di Kamar Dokter.`;
+            textKonten = `[DRAF ANAMNESA TRIAGE TERSTRUKTUR AI]\n========================================\n\n• KELUHAN PASIEN:\n  ${textKonten}\n\n• CATATAN INTERSEPTOR:\n  Narasi anamnesis triage telah distandarisasi secara otomatis untuk tinjauan dokter penanggung jawab pelayanan (DPJP).`;
         }
         
         setKeluhanAwal(textKonten);
@@ -169,7 +171,7 @@ export default function InputAsisten() {
     };
 
     const handleSave = async () => {
-        const patientId = activePatient?.no_rm || activePatient?.norm || "RM-001";
+        const patientId = activePatient?.no_rm || activePatient?.norm || "RM-101";
         if (!tdSistolik || !tdDiastolik || !nadi || !suhu || !spo2 || !keluhanAwal) {
             return triggerToast('error', "Mohon lengkapi seluruh Tanda Vital (TTV) dan Keluhan Utama.");
         }
@@ -201,16 +203,14 @@ export default function InputAsisten() {
             setSaveStatus('success');
             triggerToast('success', "Data TTV dan Keluhan sukses disinkronkan ke Supabase Node!");
             
-            // Set penanda transisi alur menuju stasiun dokter
             sessionStorage.setItem('leximed_asisten_tour_completed', 'true');
             sessionStorage.removeItem('leximed_asisten_tour_step');
             sessionStorage.setItem('leximed_doctor_tour_step', '0'); 
 
             setTimeout(() => {
                 setSaveStatus(null);
-                // KEMBALI KE WORKSTATION ASISTEN (FIXED SINKRON)
                 navigate('/dashboard-asisten');
-            }, 1250);
+            }, 1200);
 
         } catch (error) {
             console.error("Simpan Error:", error.response?.data);
@@ -224,7 +224,7 @@ export default function InputAsisten() {
                 sessionStorage.setItem('leximed_asisten_tour_completed', 'true');
                 sessionStorage.setItem('leximed_doctor_tour_step', '0'); 
                 navigate('/dashboard-asisten');
-            }, 2000);
+            }, 1800);
         } finally {
             setIsSaving(false);
         }
@@ -237,13 +237,12 @@ export default function InputAsisten() {
             setTourStep(1);
             sessionStorage.setItem('leximed_asisten_tour_step', 'input_voice');
         } else if (tourStep === 1) {
-            const dialogWawancara = `HASIL ANAMNESA TRIAGE MANUAL:\nPasien Tn. Aditya datang dengan keluhan sesak napas akut (dyspnea) yang kian memberat sejak 2 hari terakhir, disertai rasa ampek berat di dada terutama saat menarik napas dalam. Batuk produktif dengan sputum kental berwarna kuning-kehijauan, serta demam tinggi menggigil.\n\nSIMULASI TRANSKRIP WAWANCARA KLINIS:\n- Asisten: "Sejak kapan sesak napasnya mulai memberat, Pak?"\n- Pasien: "Kemarin malam paling parah sus, dada rasanya sesak sekali kayak dihantam beban berat, buat napas sakit menusuk di bagian rusuk kanan bawah."\n- Asisten: "Ada riwayat asma atau alergi obat sebelumnya?"\n- Pasien: "Tidak ada riwayat asma sus, tapi saya perokok aktif."\n\nCATATAN OBSERVASI FISIK TRIAGE:\nPasien gelisah, takipnea, menggunakan otot bantu pernapasan interkostal. Hasil auskultasi paru menunjukkan suara napas tambahan ronkhi basah kasar secara fokal di lapang paru kanan basal bawah. Rekomendasi Klinis: Diperlukan pemeriksaan citra Multimodal Thorax Imaging (Radiologi PACS) secepatnya untuk menapis draf diagnosis Pneumonia Lobaris atau Efusi Pleura.`;
+            const dialogWawancaraKDR = `HASIL ANAMNESA TRIAGE MANUAL:\nPasien Tn. Aditya Pratama (18 tahun) masuk ke unit triage IGD diantar keluarga pasca mengalami kecelakaan kendaraan bermotor (KDR). Pasien mengeluhkan nyeri akut derajat berat (skala VAS 8/10) pada tungkai kanan bawah serta rasa ngilu di dada kanan saat menarik napas dalam. Tampak pembengkakan signifikan, memar, dan deformitas sudut fokal abnormal.\n\nSIMULASI TRANSKRIP WAWANCARA KLINIS:\n- Asisten: "Bisa diceritakan bagaimana kronologi kejadiannya dan bagian mana yang paling sakit, Mas Aditya?"\n- Pasien: "Tadi jatuh dari motor kecepatan sedang sus, kaki kanan terbentur aspal dan dada kanan terbentur stang motor. Rasanya nyeri sekali menusuk, bengkak dan tidak bisa digerakkan sama sekali buat menumpu."\n- Asisten: "Apakah sempat pingsan, mual, atau ada riwayat patah tulang dan alergi obat sebelumnya?"\n- Pasien: "Tidak pingsan sus, tidak ada riwayat patah tulang atau alergi obat sebelumnya."\n\nCATATAN OBSERVASI FISIK TRIAGE:\nPasien tampak meringis menahan sakit, kesadaran compos mentis (GCS 15). Regio tungkai kanan bawah tampak edema, deformitas fokal, nyeri tekan (+), krepitasi (+), pulsasi arteri dorsalis pedis teraba adekuat. Toraks kanan tampak jejas ringan tanpa tanda flail chest. Rekomendasi Klinis: Pasang spalk fiksasi sementara dan teruskan ke DPJP UGD (Dr. Tirta) untuk penerbitan rujukan Multimodal Radiologi PACS: Toraks & Ekstremitas X-Ray / CT 3D guna menapis Fraktur Komunitif.`;
             
-            setKeluhanAwal(dialogWawancara);
+            setKeluhanAwal(dialogWawancaraKDR);
             setTourStep(2);
             sessionStorage.setItem('leximed_asisten_tour_step', 'submit_data');
         } else if (tourStep === 2) {
-            // STOP DISINI: Tutup tour, jangan auto-save, biarkan Ilham pencet sendiri tombolnya sambil jelasin ke juri!
             sessionStorage.setItem('leximed_asisten_tour_completed', 'true');
             setShowTour(false);
             triggerToast('success', "Simulasi data terpasang! Silakan jelaskan fungsionalitas sistem lalu klik Simpan secara manual.");
@@ -288,7 +287,7 @@ export default function InputAsisten() {
                 className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm"
             >
                 <div className="flex items-center gap-5">
-                    <button type="button" onClick={() => navigate(-1)} className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 hover:text-teal-600 transition-colors">
+                    <button type="button" onClick={() => navigate(-1)} className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 hover:text-teal-600 transition-colors cursor-pointer">
                         <ChevronLeft size={20} />
                     </button>
                     <div className="p-4 bg-teal-600 rounded-2xl shadow-lg shadow-teal-100 text-white">
@@ -299,20 +298,20 @@ export default function InputAsisten() {
                         <p className="text-slate-500 mt-2 font-bold flex items-center gap-2 text-xs uppercase tracking-wider">
                             <User size={14} className="text-teal-500" /> Profil Pasien Terkunci: 
                             <span className="text-teal-700 bg-teal-50 px-3 py-0.5 rounded-full font-black font-mono">
-                                {activePatient ? `${activePatient.name} (${activePatient.no_rm || activePatient.norm})` : 'TN. ADITYA (RM-001)'}
+                                {activePatient ? `${activePatient.name} (${activePatient.no_rm || activePatient.norm})` : 'TN. ADITYA PRATAMA (RM-101)'}
                             </span>
                         </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
                     <button 
-                        type="button"
+                        type="button" 
                         onClick={() => { setTourStep(0); setShowTour(true); }}
-                        className="bg-teal-500/10 text-teal-600 hover:bg-teal-500/20 border border-teal-500/20 px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-1.5 shadow-sm transition-all"
+                        className="bg-teal-500/10 text-teal-600 hover:bg-teal-500/20 border border-teal-500/20 px-4 py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
                     >
                         <HelpCircle size={14} /> Alur Kerja Sistem
                     </button>
-                    <button type="button" onClick={injectSimulationData} className="px-4 py-2.5 bg-white border border-slate-200 hover:border-teal-300 rounded-xl text-[10px] font-black uppercase text-slate-600 transition-all flex items-center gap-1.5 shadow-sm">
+                    <button type="button" onClick={injectSimulationData} className="px-4 py-2.5 bg-white border border-slate-200 hover:border-teal-300 rounded-xl text-[10px] font-black uppercase text-slate-600 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer">
                         <Sparkles size={14} className="text-teal-500" /> Ingest Simulation Data
                     </button>
                 </div>
@@ -348,14 +347,14 @@ export default function InputAsisten() {
                     <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200/80 shadow-sm flex flex-col items-center transition-all border-b-4 border-b-red-500 group relative overflow-hidden">
                         <div className="p-3 bg-red-50 rounded-2xl text-red-600 mb-4 group-hover:scale-105 transition-transform"><HeartPulse size={24} /></div>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Nadi (bpm)</span>
-                        <input type="number" placeholder="80" value={nadi} onChange={(e)=>setNadi(e.target.value)} className="w-20 text-center text-3xl font-black bg-transparent border-b-2 border-slate-100 outline-none focus:border-red-500 transition-colors" />
+                        <input type="number" placeholder="88" value={nadi} onChange={(e)=>setNadi(e.target.value)} className="w-20 text-center text-3xl font-black bg-transparent border-b-2 border-slate-100 outline-none focus:border-red-500 transition-colors" />
                     </div>
 
                     {/* Suhu */}
                     <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200/80 shadow-sm flex flex-col items-center transition-all border-b-4 border-b-orange-500 group relative overflow-hidden">
                         <div className="p-3 bg-orange-50 rounded-2xl text-orange-600 mb-4 group-hover:scale-105 transition-transform"><Thermometer size={24} /></div>
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Suhu (°C)</span>
-                        <input type="number" step="0.1" placeholder="36.5" value={suhu} onChange={(e)=>setSuhu(e.target.value)} className="w-24 text-center text-3xl font-black bg-transparent border-b-2 border-slate-100 outline-none focus:border-orange-500 transition-colors" />
+                        <input type="number" step="0.1" placeholder="36.8" value={suhu} onChange={(e)=>setSuhu(e.target.value)} className="w-24 text-center text-3xl font-black bg-transparent border-b-2 border-slate-100 outline-none focus:border-orange-500 transition-colors" />
                     </div>
 
                     {/* SpO2 */}
@@ -384,7 +383,7 @@ export default function InputAsisten() {
                             <button 
                                 type="button"
                                 onClick={toggleListening} 
-                                className={`flex items-center gap-3 px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-md active:scale-95 ${
+                                className={`flex items-center gap-3 px-5 py-3 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-md active:scale-95 cursor-pointer ${
                                     isListening 
                                     ? 'bg-red-500 text-white ring-4 ring-red-100' 
                                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200/60'
@@ -395,7 +394,7 @@ export default function InputAsisten() {
                             <button
                                 type="button"
                                 onClick={handleOptimizeAI}
-                                className="flex items-center gap-2 px-5 py-3 bg-teal-50 text-teal-700 border border-teal-200 hover:bg-teal-100 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-sm active:scale-95"
+                                className="flex items-center gap-2 px-5 py-3 bg-teal-50 text-teal-700 border border-teal-200 hover:bg-teal-100 rounded-xl font-black text-[10px] uppercase tracking-[0.2em] transition-all shadow-sm active:scale-95 cursor-pointer"
                             >
                                 <Sparkles size={14} className="text-teal-600" /> AI Rapikan Catatan
                             </button>
@@ -413,7 +412,7 @@ export default function InputAsisten() {
                         type="button"
                         onClick={handleSave} 
                         disabled={isSaving} 
-                        className="w-full mt-6 py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] bg-[#0f172a] text-white hover:bg-teal-600 transition-all active:scale-95 shadow-lg shadow-slate-900/20 disabled:opacity-40"
+                        className="w-full mt-6 py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xs uppercase tracking-[0.2em] bg-[#0f172a] text-white hover:bg-teal-600 transition-all active:scale-95 shadow-lg shadow-slate-900/20 disabled:opacity-40 cursor-pointer"
                     >
                         {isSaving ? (
                             <><Loader2 className="animate-spin" size={20} /> Membuka Gateway Kamar Dokter...</>
@@ -448,8 +447,8 @@ export default function InputAsisten() {
                                 <p className="text-slate-400 text-xs md:text-sm font-medium leading-relaxed">{tourSteps[tourStep].desc}</p>
                             </div>
                             <div className="flex items-center justify-between pt-4 border-t border-white/5 gap-4">
-                                <button type="button" onClick={handleCloseTour} className="text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider">Selesai & Keluar</button>
-                                <button type="button" onClick={handleNextTourStep} className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg flex items-center gap-1 active:scale-95 transition-all">
+                                <button type="button" onClick={handleCloseTour} className="text-xs font-bold text-slate-500 hover:text-slate-300 uppercase tracking-wider cursor-pointer">Selesai & Keluar</button>
+                                <button type="button" onClick={handleNextTourStep} className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
                                     {tourSteps[tourStep].actionLabel} <ChevronRight size={14} />
                                 </button>
                             </div>
